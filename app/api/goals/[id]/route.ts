@@ -1,0 +1,77 @@
+import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
+
+// Atualizar meta específica
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+
+    const { title, description, targetValue, endDate, isActive } = await request.json()
+
+    const goal = await prisma.goal.updateMany({
+      where: {
+        id: params.id,
+        userId: session.user.id,
+      },
+      data: {
+        ...(title && { title }),
+        ...(description !== undefined && { description }),
+        ...(targetValue && { targetValue: parseFloat(targetValue) }),
+        ...(endDate && { endDate: new Date(endDate) }),
+        ...(isActive !== undefined && { isActive }),
+      },
+    })
+
+    if (goal.count === 0) {
+      return NextResponse.json({ error: 'Meta não encontrada' }, { status: 404 })
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Erro ao atualizar meta:', error)
+    return NextResponse.json(
+      { error: 'Erro ao atualizar meta' },
+      { status: 500 }
+    )
+  }
+}
+
+// Deletar meta
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+
+    const goal = await prisma.goal.deleteMany({
+      where: {
+        id: params.id,
+        userId: session.user.id,
+      },
+    })
+
+    if (goal.count === 0) {
+      return NextResponse.json({ error: 'Meta não encontrada' }, { status: 404 })
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Erro ao deletar meta:', error)
+    return NextResponse.json(
+      { error: 'Erro ao deletar meta' },
+      { status: 500 }
+    )
+  }
+}

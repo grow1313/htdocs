@@ -1,0 +1,205 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          String    @default("PRODUTOR")
+  plan          String    @default("FREE")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  accounts      Account[]
+  funnels       Funnel[]
+  integrations  Integration[]
+  goals         Goal[]
+  notifications Notification[]
+  webhookLogs   WebhookLog[]
+  campaigns     Campaign[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+}
+
+model Funnel {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stages FunnelStage[]
+  events FunnelEvent[]
+}
+
+model FunnelStage {
+  id          String   @id @default(cuid())
+  funnelId    String
+  name        String
+  order       Int
+  description String?
+  
+  funnel Funnel        @relation(fields: [funnelId], references: [id], onDelete: Cascade)
+  events FunnelEvent[]
+  
+  @@unique([funnelId, order])
+}
+
+model FunnelEvent {
+  id        String   @id @default(cuid())
+  funnelId  String
+  stageId   String
+  leadId    String?
+  eventType String
+  metadata  String?
+  timestamp DateTime @default(now())
+  
+  funnel Funnel      @relation(fields: [funnelId], references: [id], onDelete: Cascade)
+  stage  FunnelStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  
+  @@index([funnelId])
+  @@index([stageId])
+  @@index([timestamp])
+}
+
+model Integration {
+  id           String          @id @default(cuid())
+  userId       String
+  platform     String
+  accessToken  String
+  refreshToken String?
+  expiresAt    DateTime?
+  isActive     Boolean         @default(true)
+  config       String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, platform])
+}
+
+model Goal {
+  id             String    @id @default(cuid())
+  userId         String
+  title          String
+  description    String?
+  targetValue    Float
+  currentValue   Float     @default(0)
+  metric         String    // 'sales', 'revenue', 'leads', 'conversions', 'clicks'
+  platform       String?   // 'ALL', 'WHATSAPP', 'META_ADS', 'HOTMART'
+  startDate      DateTime  @default(now())
+  endDate        DateTime
+  isActive       Boolean   @default(true)
+  isCompleted    Boolean   @default(false)
+  completedAt    DateTime?
+  notified       Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([isActive])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // 'goal_completed', 'alert', 'info', 'warning'
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+model WebhookLog {
+  id          String   @id @default(cuid())
+  userId      String
+  platform    String   // 'WHATSAPP', 'HOTMART', 'META_ADS'
+  event       String   // Tipo do evento recebido
+  method      String   // GET, POST, etc
+  endpoint    String   // URL do webhook
+  headers     String?  // JSON dos headers
+  payload     String?  // JSON do payload recebido
+  response    String?  // Resposta enviada
+  statusCode  Int      @default(200)
+  duration    Int?     // Duração do processamento em ms
+  error       String?  // Mensagem de erro se houver
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([platform])
+  @@index([event])
+  @@index([createdAt])
+  @@index([statusCode])
+}
+
+model Campaign {
+  id                String   @id @default(cuid())
+  userId            String
+  platform          String   // 'META_ADS', 'WHATSAPP', 'HOTMART'
+  campaignId        String   // ID da campanha na plataforma (ex: Facebook Campaign ID)
+  name              String
+  status            String   // 'ACTIVE', 'PAUSED', 'ARCHIVED'
+  isActive          Boolean  @default(true)
+  isDefault         Boolean  @default(false) // Campanha padrão exibida no dashboard
+  objective         String?  // Objetivo da campanha (CONVERSIONS, TRAFFIC, etc)
+  startDate         DateTime?
+  endDate           DateTime?
+  budget            Float?   // Orçamento configurado
+  spend             Float    @default(0) // Gasto atual
+  lastSyncedAt      DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, platform, campaignId])
+  @@index([userId])
+  @@index([platform])
+  @@index([isActive])
+  @@index([isDefault])
+}

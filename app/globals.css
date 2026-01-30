@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+/* Escalamento global para reduzir todos os elementos */
+@layer base {
+  html {
+    font-size: 14px; /* Reduz de 16px padrão para 14px */
+  }
+  
+  @media (max-width: 768px) {
+    html {
+      font-size: 12px;
+    }
+  }
+}
+
+/* Ajuste de espaçamentos e tamanhos */
+@layer components {
+  /* Reduz padding dos containers */
+  .container {
+    @apply px-3 sm:px-4 lg:px-6;
+  }
+  
+  /* Cards mais compactos */
+  .card-compact {
+    @apply p-3 space-y-2;
+  }
+  
+  /* Botões menores */
+  .btn-sm {
+    @apply px-2.5 py-1.5 text-xs;
+  }
+  
+  /* Headings ajustados */
+  h1 {
+    @apply text-lg sm:text-xl;
+  }
+  
+  h2 {
+    @apply text-base sm:text-lg;
+  }
+  
+  h3 {
+    @apply text-sm sm:text-base;
+  }
+}
