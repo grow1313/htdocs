@@ -67,50 +67,49 @@ export default function AnalyticsPage() {
     const fetchData = async () => {
       try {
         setLoading(true)
-        
         // Buscar métricas de todas as plataformas
         const [whatsappRes, facebookRes, hotmartRes] = await Promise.all([
           fetch('/api/whatsapp/metrics'),
           fetch('/api/facebook/metrics'),
           fetch('/api/hotmart/metrics'),
         ])
-
         const whatsapp = await whatsappRes.json()
         const facebook = await facebookRes.json()
         const hotmart = await hotmartRes.json()
-
         setMetrics({
           whatsapp: whatsapp.data || { conversations: 0, messages: 0, responseRate: 0 },
           facebook: facebook.data || { clicks: 0, impressions: 0, ctr: 0, cpc: 0, spend: 0 },
           hotmart: hotmart.data || { sales: 0, revenue: 0, checkouts: 0, conversionRate: 0 },
         })
-
-        // Gerar dados de tendência (últimos 30 dias)
-        const trends: TrendData[] = []
-        const today = new Date()
-        for (let i = 29; i >= 0; i--) {
-          const date = new Date(today)
-          date.setDate(date.getDate() - i)
-          trends.push({
-            date: date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }),
-            conversas: Math.floor(Math.random() * 100) + 50,
-            leads: Math.floor(Math.random() * 50) + 20,
-            vendas: Math.floor(Math.random() * 20) + 5,
-            receita: Math.floor(Math.random() * 5000) + 1000,
-          })
-        }
-        setTrendData(trends)
       } catch (error) {
         console.error('Erro ao buscar dados:', error)
       } finally {
         setLoading(false)
       }
     }
-
     if (status === 'authenticated') {
       fetchData()
     }
   }, [status, dateRange])
+
+  // Gerar dados de tendência (mock) apenas no client-side para evitar hydration mismatch
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const trends: TrendData[] = [];
+    const today = new Date();
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      trends.push({
+        date: date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }),
+        conversas: Math.floor(Math.random() * 100) + 50,
+        leads: Math.floor(Math.random() * 50) + 20,
+        vendas: Math.floor(Math.random() * 20) + 5,
+        receita: Math.floor(Math.random() * 5000) + 1000,
+      });
+    }
+    setTrendData(trends);
+  }, [status, dateRange]);
 
   if (status === 'loading' || loading) {
     return (
