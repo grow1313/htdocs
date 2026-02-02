@@ -35,6 +35,7 @@ interface TrendData {
   leads: number
   vendas: number
   receita: number
+  [key: string]: string | number
 }
 
 export default function AnalyticsPage() {
@@ -123,11 +124,11 @@ export default function AnalyticsPage() {
   }
 
   const funnelData = [
-    { stage: 'Impressões', value: metrics.facebook.impressions, color: '#3b82f6' },
-    { stage: 'Cliques', value: metrics.facebook.clicks, color: '#10b981' },
-    { stage: 'Conversas', value: metrics.whatsapp.conversations, color: '#f59e0b' },
-    { stage: 'Checkouts', value: metrics.hotmart.checkouts, color: '#ef4444' },
-    { stage: 'Vendas', value: metrics.hotmart.sales, color: '#8b5cf6' },
+    { name: 'Impressões', value: metrics.facebook.impressions, color: '#3b82f6' },
+    { name: 'Cliques', value: metrics.facebook.clicks, color: '#10b981' },
+    { name: 'Conversas', value: metrics.whatsapp.conversations, color: '#f59e0b' },
+    { name: 'Checkouts', value: metrics.hotmart.checkouts, color: '#ef4444' },
+    { name: 'Vendas', value: metrics.hotmart.sales, color: '#8b5cf6' },
   ]
 
   const comparisonData = [
@@ -270,19 +271,35 @@ export default function AnalyticsPage() {
         {/* Visualização do Funil */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Visualização do Funil</h2>
-          <FunnelVisualization data={funnelData} />
+          <FunnelVisualization title="Funil de Conversão" stages={funnelData} />
         </div>
 
         {/* Gráficos de Tendência e Comparação */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Tendência de Performance</h2>
-            <TrendChart data={trendData} />
+            <TrendChart 
+              title="Tendência de Performance"
+              data={trendData}
+              lines={[ 
+                { dataKey: 'conversas', name: 'Conversas', color: '#3b82f6' },
+                { dataKey: 'leads', name: 'Leads', color: '#10b981' },
+                { dataKey: 'vendas', name: 'Vendas', color: '#f59e0b' },
+                { dataKey: 'receita', name: 'Receita', color: '#8b5cf6' }
+              ]}
+            />
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Comparação de Períodos</h2>
-            <ComparisonChart data={comparisonData} />
+            <ComparisonChart 
+              title="Comparação de Períodos"
+              data={comparisonData}
+              bars={[ 
+                { dataKey: 'atual', name: 'Atual', color: '#3b82f6' },
+                { dataKey: 'anterior', name: 'Anterior', color: '#10b981' }
+              ]}
+            />
           </div>
         </div>
 

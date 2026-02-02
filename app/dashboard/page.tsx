@@ -306,7 +306,6 @@ export default function Dashboard() {
               
               {/* Área do usuário com botão de sair */}
               <UserMenu />
-            import UserMenu from '@/components/UserMenu'
             </div>
           </div>
         </div>

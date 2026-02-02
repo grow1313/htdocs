@@ -254,7 +254,7 @@ export default function TestIntegrationsPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    ID da conta de anúncios (com ou sem prefixo "act_")
+                    ID da conta de anúncios (com ou sem prefixo &quot;act_&quot;)
                   </p>
                 </div>
 
@@ -303,7 +303,7 @@ export default function TestIntegrationsPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Token de segurança enviado no header "hottok" (recomendado)
+                    Token de segurança enviado no header &quot;hottok&quot; (recomendado)
                   </p>
                 </div>
 

@@ -1,10 +1,14 @@
 import { Calendar, Filter } from 'lucide-react'
 
 interface DateFilterProps {
-  selectedPeriod: string
-  onPeriodChange: (period: string) => void
-  customDateRange?: { start: string; end: string }
-  onCustomDateChange?: (start: string, end: string) => void
+  selectedPeriod?: string;
+  onPeriodChange?: (period: string) => void;
+  customDateRange?: { start: string; end: string };
+  onCustomDateChange?: (start: string, end: string) => void;
+  startDate?: Date | null;
+  endDate?: Date | null;
+  period?: string;
+  onFilterChange?: (start: any, end: any, period: any) => void;
 }
 
 export default function DateFilter({ 
@@ -31,7 +35,7 @@ export default function DateFilter({
         {periods.map((period) => (
           <button
             key={period.value}
-            onClick={() => onPeriodChange(period.value)}
+            onClick={() => onPeriodChange && onPeriodChange(period.value)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
               selectedPeriod === period.value
                 ? 'bg-whatsapp-light dark:bg-green-600 text-white'

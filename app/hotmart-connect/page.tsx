@@ -147,7 +147,7 @@ export default function HotmartConnect() {
               </div>
               <div className="text-xs text-gray-600 space-y-1">
                 <p>• Acesse: Hotmart → Ferramentas → Webhooks</p>
-                <p>• Cole esta URL no campo "URL de Postback"</p>
+                <p>• Cole esta URL no campo &quot;URL de Postback&quot;</p>
                 <p>• Marque os eventos: <strong>Compra aprovada, Compra cancelada, Compra em análise</strong></p>
               </div>
             </div>

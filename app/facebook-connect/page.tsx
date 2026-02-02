@@ -238,9 +238,9 @@ export default function FacebookConnect() {
               <h4 className="font-semibold text-blue-900 mb-2">Como gerar o Access Token:</h4>
               <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
                 <li>Acesse <a href="https://developers.facebook.com/tools/explorer/" target="_blank" rel="noopener noreferrer" className="underline">Graph API Explorer</a></li>
-                <li>Selecione seu App ou use "Graph API Explorer"</li>
-                <li>Clique em "Permissions" e adicione: <code className="bg-white px-1 rounded">ads_read</code>, <code className="bg-white px-1 rounded">ads_management</code></li>
-                <li>Clique em "Generate Access Token"</li>
+                <li>Selecione seu App ou use &quot;Graph API Explorer&quot;</li>
+                <li>Clique em &quot;Permissions&quot; e adicione: <code className="bg-white px-1 rounded">ads_read</code>, <code className="bg-white px-1 rounded">ads_management</code></li>
+                <li>Clique em &quot;Generate Access Token&quot;</li>
                 <li>Autorize o App</li>
                 <li>Copie o token gerado</li>
               </ol>

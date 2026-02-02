@@ -171,6 +171,7 @@ async function processIncomingMessage(message: any, metadata: any) {
           userId: integration.userId,
           name: 'Funil Principal',
           description: 'Funil de vendas criado automaticamente',
+          startDate: new Date(),
           stages: {
             create: [
               { name: 'Lead', order: 1 },
@@ -189,8 +190,7 @@ async function processIncomingMessage(message: any, metadata: any) {
       where: {
         funnelId: funnel.id,
         metadata: {
-          path: '$.whatsappNumber',
-          equals: from,
+          contains: from,
         },
       },
       orderBy: { timestamp: 'desc' },

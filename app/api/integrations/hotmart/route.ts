@@ -155,6 +155,9 @@ async function processPurchaseComplete(data: any) {
       where: { userId: integration.userId },
       include: { stages: true },
     })
+    if (funnel && !funnel.stages) {
+      funnel.stages = [];
+    }
 
     if (!funnel) {
       // Criar funil padrão
@@ -163,6 +166,7 @@ async function processPurchaseComplete(data: any) {
           userId: integration.userId,
           name: 'Funil Principal',
           description: 'Funil de vendas criado automaticamente',
+          startDate: new Date(),
           stages: {
             create: [
               { name: 'Lead', order: 1 },
@@ -173,7 +177,7 @@ async function processPurchaseComplete(data: any) {
           },
         },
         include: { stages: true },
-      })
+      }) as typeof funnel & { stages: any[] }
     }
 
     // Estágio final (Pago)
@@ -218,8 +222,7 @@ async function processPurchaseCanceled(data: any) {
       where: {
         eventType: 'hotmart_purchase_complete',
         metadata: {
-          path: '$.transactionId',
-          equals: transactionId,
+          contains: transactionId,
         },
       },
     })

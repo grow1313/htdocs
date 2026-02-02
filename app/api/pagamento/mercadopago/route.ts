@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     profissional: { title: 'Profissional', price: 97 },
     agencia: { title: 'Agência', price: 197 },
   };
-  const selected = plans[plan] || plans['pro'];
+  const selected = plans[plan as keyof typeof plans] || plans['pro'];
 
   // Chave de acesso Mercado Pago (use variável de ambiente em produção)
   const MP_TOKEN = process.env.MERCADOPAGO_ACCESS_TOKEN;

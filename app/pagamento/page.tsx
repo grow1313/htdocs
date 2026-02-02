@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 
 const PLANOS = {
@@ -37,10 +37,18 @@ const PLANOS = {
 };
 
 export default function PagamentoPage() {
+  return (
+    <Suspense>
+      <PagamentoPageContent />
+    </Suspense>
+  );
+}
+
+function PagamentoPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const planoParam = searchParams.get('plan');
-  const plano = PLANOS[planoParam] || PLANOS['pro'];
+  const plano = planoParam && PLANOS[planoParam as keyof typeof PLANOS] ? PLANOS[planoParam as keyof typeof PLANOS] : PLANOS['pro'];
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -61,44 +69,38 @@ export default function PagamentoPage() {
         body: JSON.stringify({ plan: planoParam }),
       });
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (data.init_point) {
+        window.location.href = data.init_point;
       } else {
-        setError(data.error || 'Erro ao iniciar pagamento.');
+        setError('Erro ao redirecionar para o pagamento');
       }
-    } catch (e) {
-      setError('Erro ao conectar com Mercado Pago.');
+    } catch (err) {
+      setError('Erro ao conectar com o Mercado Pago');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-        <h1 className="text-3xl font-bold mb-2">Pagamento</h1>
-        <p className="text-gray-600 mb-6">Confira os detalhes do seu plano e finalize a assinatura.</p>
-        <div className="mb-6 p-4 rounded-xl border border-gray-200 bg-gray-50">
-          <div className="text-xl font-bold mb-1">{plano.nome}</div>
-          <div className="text-3xl font-bold text-whatsapp-light mb-2">{plano.preco}</div>
-          <div className="text-gray-600 text-sm mb-2">{plano.descricao}</div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center py-8">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-4 text-center dark:text-white">Pagamento</h1>
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-2 dark:text-white">{plano.nome}</h2>
+          <p className="text-lg font-bold text-green-600 mb-1">{plano.preco}</p>
+          <p className="text-gray-600 dark:text-gray-300 text-sm">{plano.descricao}</p>
         </div>
-        {/* Pagamento Mercado Pago real */}
         <button
-          className="w-full bg-whatsapp-light text-white py-3 rounded-lg font-semibold hover:bg-whatsapp-dark transition mb-4 disabled:opacity-60"
           onClick={handleMercadoPago}
           disabled={loading}
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition mb-2 disabled:opacity-60"
         >
           {loading ? 'Redirecionando...' : 'Pagar com Mercado Pago'}
         </button>
-        {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
-        <p className="text-xs text-gray-500 mt-4">
-          Ao finalizar o pagamento, você terá acesso imediato à plataforma.
-        </p>
-        <Link href="/dashboard" className="block mt-6 text-whatsapp-light hover:underline text-sm">
-          Voltar para o dashboard
-        </Link>
+        {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
+        <Link href="/" className="block text-center text-sm text-gray-500 mt-4 hover:underline">Voltar</Link>
       </div>
     </div>
   );
 }
+// ...existing code...
