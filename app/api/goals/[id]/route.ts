@@ -1,13 +1,19 @@
+
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
+// Forçar rota dinâmica e compatibilidade com Next.js 14+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Atualizar meta específica
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+// Tipagem padrão para context
+type Context = { params: { id: string } }
+
+export async function PUT(request: Request, context: Context) {
+  const { params } = context;
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
@@ -45,10 +51,8 @@ export async function PUT(
 }
 
 // Deletar meta
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, context: Context) {
+  const { params } = context;
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
