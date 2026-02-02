@@ -1,6 +1,5 @@
 
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
@@ -13,7 +12,7 @@ export const revalidate = 0;
 // Tipagem padrão para context
 type Context = { params: { id: string } }
 
-export async function PUT(request: Request, context: Context): Promise<ReturnType<typeof NextResponse>> {
+export async function PUT(request: NextRequest, context: Context): Promise<ReturnType<typeof NextResponse>> {
   const { params } = context;
   try {
     const session = await getServerSession(authOptions)
@@ -52,7 +51,7 @@ export async function PUT(request: Request, context: Context): Promise<ReturnTyp
 }
 
 // Deletar meta
-export async function DELETE(request: Request, context: Context): Promise<ReturnType<typeof NextResponse>> {
+export async function DELETE(request: NextRequest, context: Context): Promise<ReturnType<typeof NextResponse>> {
   const { params } = context;
   try {
     const session = await getServerSession(authOptions)
