@@ -43,12 +43,14 @@ export default function WebhooksPage() {
     if (status === 'unauthenticated') {
       router.push('/login')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, router])
 
   useEffect(() => {
     if (status === 'authenticated') {
       fetchLogs()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, filter])
 
   const fetchLogs = async () => {

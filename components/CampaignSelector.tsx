@@ -27,6 +27,7 @@ export default function CampaignSelector({ onSelectCampaign }: CampaignSelectorP
 
   useEffect(() => {
     fetchCampaigns()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchCampaigns = async (forceSync = false) => {

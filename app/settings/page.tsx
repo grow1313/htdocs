@@ -48,17 +48,17 @@ export default function ConfigPage() {
         ])
 
         setIntegrations({
-          facebook: fbData.connected || false,
-          whatsapp: waData.connected || false,
-          hotmart: hmData.connected || false,
+          meta: fbData?.connected || false,
+          whatsapp: waData?.connected || false,
+          hotmart: hmData?.connected || false,
         })
       } catch (error) {
         console.error('Erro ao verificar integrações:', error)
-      } finally {
-        setLoading(false)
       }
     }
-
+    checkIntegrations()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
     checkIntegrations()
   }, [])
 

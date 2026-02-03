@@ -55,8 +55,9 @@ function PagamentoPageContent() {
 
   useEffect(() => {
     if (!planoParam) {
-      router.replace('/');
+      router.replace('/')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [planoParam, router]);
 
   const handleMercadoPago = async () => {

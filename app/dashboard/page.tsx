@@ -55,45 +55,46 @@ export default function Dashboard() {
         if (response.ok) {
           const data = await response.json()
           setWhatsappData(data)
-        } else {
-          // Se der erro, usa dados mock
-          setWhatsappData({
-            conversasIniciadas: 0,
-            conversasNaoTerminadas: 0,
-            leadsQualificados: 0,
-            mediaConversasDia: 0,
-            taxaResposta: '0%',
-            tempoMedioResposta: '0min',
-          })
-        }
-      } catch (error) {
-        console.error('Erro ao buscar métricas WhatsApp:', error)
-        // Dados mock em caso de erro
-        setWhatsappData({
-          conversasIniciadas: 1245,
-          conversasNaoTerminadas: 458,
-          leadsQualificados: 342,
-          mediaConversasDia: 178,
-          taxaResposta: '73%',
-          tempoMedioResposta: '4.2min',
-        })
-      } finally {
-        setLoadingWhatsApp(false)
-      }
-    }
-
-    fetchWhatsAppMetrics()
-    // Atualizar a cada 30 segundos
-    const interval = setInterval(fetchWhatsAppMetrics, 30000)
-    return () => clearInterval(interval)
-  }, [])
-
-  // Buscar dados reais do Facebook Ads
-  useEffect(() => {
-    const fetchFacebookMetrics = async () => {
-      try {
-        setLoadingFacebook(true)
-        const periodMap: Record<string, string> = {
+        useEffect(() => {
+          const fetchWhatsAppMetrics = async () => {
+            try {
+              setLoadingWhatsApp(true)
+              const response = await fetch('/api/whatsapp/metrics')
+              if (response.ok) {
+                const data = await response.json()
+                setWhatsappData(data)
+              } else {
+                // Se der erro, usa dados mock
+                setWhatsappData({
+                  conversasIniciadas: 0,
+                  conversasNaoTerminadas: 0,
+                  leadsQualificados: 0,
+                  mediaConversasDia: 0,
+                  taxaResposta: '0%',
+                  tempoMedioResposta: '0min',
+                })
+              }
+            } catch (error) {
+              console.error('Erro ao buscar métricas WhatsApp:', error)
+              // Dados mock em caso de erro
+              setWhatsappData({
+                conversasIniciadas: 1245,
+                conversasNaoTerminadas: 458,
+                leadsQualificados: 342,
+                mediaConversasDia: 178,
+                taxaResposta: '73%',
+                tempoMedioResposta: '4.2min',
+              })
+            } finally {
+              setLoadingWhatsApp(false)
+            }
+          }
+          fetchWhatsAppMetrics()
+          // Atualizar a cada 30 segundos
+          const interval = setInterval(fetchWhatsAppMetrics, 30000)
+          return () => clearInterval(interval)
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
           'today': 'today',
           '7days': 'last_7d',
           '30days': 'last_30d',

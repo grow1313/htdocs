@@ -62,6 +62,7 @@ export default function AnalyticsPage() {
     if (status === 'unauthenticated') {
       router.push('/login')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, router])
 
   useEffect(() => {

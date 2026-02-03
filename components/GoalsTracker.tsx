@@ -49,6 +49,7 @@ export default function GoalsTracker({ metrics }: GoalsTrackerProps) {
 
   useEffect(() => {
     fetchGoals()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -56,6 +57,7 @@ export default function GoalsTracker({ metrics }: GoalsTrackerProps) {
     if (goals.length > 0 && metrics) {
       checkGoals()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metrics])
 
   const fetchGoals = async () => {

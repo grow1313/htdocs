@@ -46,6 +46,7 @@ export default function AISuggestions({ metrics }: AISuggestionsProps) {
 
   useEffect(() => {
     fetchSuggestions()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Carregar uma vez ao montar
 
   const getIcon = (type: string) => {
