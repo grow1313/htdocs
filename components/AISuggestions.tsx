@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Lightbulb, Sparkles, TrendingUp, AlertTriangle, Info, CheckCircle, RefreshCw } from 'lucide-react'
 
 interface Suggestion {
@@ -18,7 +18,11 @@ interface AISuggestionsProps {
   }
 }
 
-import { useCallback } from 'react'
+export default function AISuggestions({ metrics }: AISuggestionsProps) {
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
+  const [loading, setLoading] = useState(false)
+  const [mode, setMode] = useState<'ai' | 'demo' | 'basic'>('demo')
+
 
   const fetchSuggestions = useCallback(async () => {
     try {
@@ -42,7 +46,7 @@ import { useCallback } from 'react'
 
   useEffect(() => {
     fetchSuggestions()
-  }, [fetchSuggestions]) // Carregar uma vez ao montar
+  }, [fetchSuggestions])
 
   const getIcon = (type: string) => {
     switch (type) {

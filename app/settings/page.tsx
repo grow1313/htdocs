@@ -48,7 +48,7 @@ export default function ConfigPage() {
         ])
 
         setIntegrations({
-          meta: fbData?.connected || false,
+          facebook: fbData?.connected || false,
           whatsapp: waData?.connected || false,
           hotmart: hmData?.connected || false,
         })

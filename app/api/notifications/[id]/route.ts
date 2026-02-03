@@ -6,9 +6,10 @@ import { prisma } from '@/lib/prisma'
 // Marcar notificação como lida
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const paramsObj = await context.params;
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
@@ -16,7 +17,7 @@ export async function PUT(
 
     await prisma.notification.updateMany({
       where: {
-        id: params.id,
+        id: paramsObj.id,
         userId: session.user.id,
       },
       data: {
@@ -37,9 +38,10 @@ export async function PUT(
 // Deletar notificação
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const paramsObj = await context.params;
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
@@ -47,7 +49,7 @@ export async function DELETE(
 
     await prisma.notification.deleteMany({
       where: {
-        id: params.id,
+        id: paramsObj.id,
         userId: session.user.id,
       },
     })

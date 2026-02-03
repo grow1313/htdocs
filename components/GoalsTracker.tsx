@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Target, Plus, X, TrendingUp, Calendar, AlertCircle, CheckCircle2, Trash2 } from 'lucide-react'
 
 interface Goal {

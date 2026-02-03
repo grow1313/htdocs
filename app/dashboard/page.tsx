@@ -18,6 +18,57 @@ import ThemeToggle from '@/components/ThemeToggle'
 import Link from 'next/link'
 
 export default function Dashboard() {
+      // ...
+    // Buscar dados reais do Facebook
+    const fetchFacebookMetrics = async () => {
+      try {
+        setLoadingFacebook(true)
+          const periodMap: Record<string, string> = {
+            'today': 'today',
+            '7days': 'last_7d',
+            '30days': 'last_30d',
+          }
+          const period = periodMap[selectedPeriod] || 'last_30d'
+          let url = `/api/facebook/metrics?period=${period}`
+        if (selectedCampaign) {
+          url += `&campaignId=${selectedCampaign}`
+        }
+        const response = await fetch(url)
+        if (response.ok) {
+          const data = await response.json()
+          setFacebookData(data)
+        } else {
+          // Dados mock
+          setFacebookData({
+            cpm: 'R$ 0.00',
+            roi: '0.0x',
+            cpc: 'R$ 0.00',
+            impressoes: '0',
+            cliques: 0,
+            gastos: 'R$ 0.00',
+            ctr: '0%',
+            frequencia: '0',
+            connected: false,
+          })
+        }
+      } catch (error) {
+        console.error('Erro ao buscar métricas Facebook:', error)
+        // Dados mock
+        setFacebookData({
+          cpm: 'R$ 45.20',
+          roi: '3.2x',
+          cpc: 'R$ 2.15',
+          impressoes: '125.4k',
+          cliques: 1854,
+          gastos: 'R$ 3.987',
+          ctr: '1.48%',
+          frequencia: '2.3',
+          connected: false,
+        })
+      } finally {
+        setLoadingFacebook(false)
+      }
+    }
   const [viewMode, setViewMode] = useState<'produtor' | 'gestor'>('produtor')
   const [selectedPeriod, setSelectedPeriod] = useState('7days')
   const [customDateRange, setCustomDateRange] = useState({ start: '', end: '' })
@@ -95,19 +146,19 @@ export default function Dashboard() {
           return () => clearInterval(interval)
           // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
-          'today': 'today',
-          '7days': 'last_7d',
-          '30days': 'last_30d',
-        }
-        const period = periodMap[selectedPeriod] || 'last_30d'
-        
-        // Adiciona campaignId à URL se uma campanha específica estiver selecionada
-        // Se selectedCampaign for null, busca dados de todas as campanhas (agregado)
-        const campaignParam = selectedCampaign ? `&campaignId=${selectedCampaign}` : ''
-        const response = await fetch(`/api/facebook/metrics?period=${period}${campaignParam}`)
-        if (response.ok) {
-          const data = await response.json()
-          setFacebookData(data)
+
+  // Mapeamento de períodos para API do Facebook
+  const periodMap: Record<string, string> = {
+    'today': 'today',
+    '7days': 'last_7d',
+    '30days': 'last_30d',
+  }
+  const period = periodMap[selectedPeriod] || 'last_30d'
+
+  // Adiciona campaignId à URL se uma campanha específica estiver selecionada
+  // Se selectedCampaign for null, busca dados de todas as campanhas (agregado)
+  const campaignParam = selectedCampaign ? `&campaignId=${selectedCampaign}` : ''
+  // ...restante do código...
         } else {
           // Dados mock
           setFacebookData({

@@ -11,8 +11,9 @@ export const revalidate = 0;
 // Atualizar meta específica
 import { NextRequest } from 'next/server';
 
-export async function PUT(request: NextRequest, context: { params: { id: string } }) {
-  const params = context.params;
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const paramsObj = await context.params;
+  const params = paramsObj;
   try {
     if (!params || !params.id) {
       return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
@@ -53,8 +54,9 @@ export async function PUT(request: NextRequest, context: { params: { id: string 
 }
 
 // Deletar meta
-export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
-  const params = context.params;
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const paramsObj = await context.params;
+  const params = paramsObj;
   try {
     if (!params || !params.id) {
       return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
