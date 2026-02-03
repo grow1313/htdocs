@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 interface Campaign {
   id: string
@@ -50,7 +51,7 @@ export default function CampaignSelector({ onSelectCampaign }: CampaignSelectorP
           if (onSelectCampaign) {
             onSelectCampaign(null, 'Todas as Campanhas')
           }
-        } else {
+  const fetchCampaigns = useCallback(async (forceSync = false) => {
           // Se foi um sync forçado, manter a seleção atual
           const current = data.campaigns.find((c: Campaign) => c.id === selectedCampaign)
           if (current && onSelectCampaign) {
@@ -86,6 +87,9 @@ export default function CampaignSelector({ onSelectCampaign }: CampaignSelectorP
 
       // Recarregar lista para atualizar flags (se não for "Todas")
       if (campaignId !== 'all') {
+  useEffect(() => {
+    fetchCampaigns()
+  }, [fetchCampaigns])
         fetchCampaigns()
       }
     } catch (error) {

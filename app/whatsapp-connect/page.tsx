@@ -1,6 +1,7 @@
-'use client'
 
+'use client'
 import { useState } from 'react'
+import Image from 'next/image'
 import { MessageCircle, CheckCircle, AlertCircle, Loader2, Smartphone } from 'lucide-react'
 
 export default function WhatsAppConnection() {
@@ -198,7 +199,7 @@ export default function WhatsAppConnection() {
           <div className="bg-white border-4 border-gray-200 rounded-2xl p-8 mb-6">
             <div className="flex justify-center">
               {qrCode ? (
-                <img src={qrCode} alt="QR Code" className="w-72 h-72" />
+                <Image src={qrCode} alt="QR Code" width={288} height={288} className="w-72 h-72" />
               ) : (
                 <div className="w-72 h-72 bg-gray-100 rounded-lg flex items-center justify-center">
                   <Loader2 className="w-12 h-12 animate-spin text-gray-400" />

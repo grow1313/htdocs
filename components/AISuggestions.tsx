@@ -18,12 +18,9 @@ interface AISuggestionsProps {
   }
 }
 
-export default function AISuggestions({ metrics }: AISuggestionsProps) {
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
-  const [loading, setLoading] = useState(false)
-  const [mode, setMode] = useState<'demo' | 'ai' | 'fallback'>('demo')
+import { useCallback } from 'react'
 
-  const fetchSuggestions = async () => {
+  const fetchSuggestions = useCallback(async () => {
     try {
       setLoading(true)
       const response = await fetch('/api/ai/suggestions', {
@@ -31,7 +28,6 @@ export default function AISuggestions({ metrics }: AISuggestionsProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ metrics }),
       })
-
       if (response.ok) {
         const data = await response.json()
         setSuggestions(data.suggestions || [])
@@ -42,12 +38,11 @@ export default function AISuggestions({ metrics }: AISuggestionsProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [metrics])
 
   useEffect(() => {
     fetchSuggestions()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // Carregar uma vez ao montar
+  }, [fetchSuggestions]) // Carregar uma vez ao montar
 
   const getIcon = (type: string) => {
     switch (type) {
