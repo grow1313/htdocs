@@ -59,8 +59,6 @@ export default function ConfigPage() {
     checkIntegrations()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-    checkIntegrations()
-  }, [])
 
   const handleSave = () => {
     // Aqui você salvaria no banco de dados
