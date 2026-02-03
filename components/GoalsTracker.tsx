@@ -47,20 +47,7 @@ export default function GoalsTracker({ metrics }: GoalsTrackerProps) {
     { value: 'clicks', label: 'Cliques', icon: '👆' },
   ]
 
-  useEffect(() => {
-    fetchGoals()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    // Verificar metas quando métricas mudarem
-    if (goals.length > 0 && metrics) {
-      checkGoals()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [metrics])
-
-  const fetchGoals = async () => {
+  const fetchGoals = React.useCallback(async () => {
     try {
       const response = await fetch('/api/goals')
       if (response.ok) {
@@ -70,9 +57,9 @@ export default function GoalsTracker({ metrics }: GoalsTrackerProps) {
     } catch (error) {
       console.error('Erro ao buscar metas:', error)
     }
-  }
+  }, [])
 
-  const checkGoals = async () => {
+  const checkGoals = React.useCallback(async () => {
     try {
       await fetch('/api/goals/check', {
         method: 'POST',
@@ -84,7 +71,18 @@ export default function GoalsTracker({ metrics }: GoalsTrackerProps) {
     } catch (error) {
       console.error('Erro ao verificar metas:', error)
     }
-  }
+  }, [metrics, fetchGoals])
+
+  useEffect(() => {
+    fetchGoals()
+  }, [fetchGoals])
+
+  useEffect(() => {
+    // Verificar metas quando métricas mudarem
+    if (goals.length > 0 && metrics) {
+      checkGoals()
+    }
+  }, [metrics, checkGoals, goals.length])
 
   const createGoal = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -39,31 +39,14 @@ export default function WebhooksPage() {
     status: 'all',
   })
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, router])
-
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchLogs()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, filter])
-
-  const fetchLogs = async () => {
+  const fetchLogs = React.useCallback(async () => {
     try {
       setLoading(true)
-      
       const params = new URLSearchParams()
       if (filter.platform !== 'all') params.append('platform', filter.platform)
       if (filter.status !== 'all') params.append('status', filter.status)
-      
       const response = await fetch(`/api/webhooks/logs?${params.toString()}`)
       const data = await response.json()
-      
       setLogs(data.logs || [])
       setStats({
         total: data.total,
@@ -76,7 +59,19 @@ export default function WebhooksPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filter])
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login')
+    }
+  }, [status, router])
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchLogs()
+    }
+  }, [status, fetchLogs])
 
   const clearOldLogs = async (days: number) => {
     if (!confirm(`Tem certeza que deseja remover logs com mais de ${days} dias?`)) {
