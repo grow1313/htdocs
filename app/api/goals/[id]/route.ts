@@ -9,8 +9,10 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 // Atualizar meta específica
-// Tipagem padrão para context
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+import { NextRequest } from 'next/server';
+
+export async function PUT(request: NextRequest, context: { params: { id: string } }) {
+  const { params } = context;
   try {
     if (!params || !params.id) {
       return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
@@ -51,7 +53,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // Deletar meta
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+  const { params } = context;
   try {
     if (!params || !params.id) {
       return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
