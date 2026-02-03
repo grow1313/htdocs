@@ -12,6 +12,9 @@ export const revalidate = 0;
 // Tipagem padrão para context
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
+    if (!params || !params.id) {
+      return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
+    }
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
@@ -50,6 +53,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 // Deletar meta
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
+    if (!params || !params.id) {
+      return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
+    }
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
