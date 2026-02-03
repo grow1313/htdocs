@@ -12,7 +12,7 @@ export const revalidate = 0;
 import { NextRequest } from 'next/server';
 
 export async function PUT(request: NextRequest, context: { params: { id: string } }) {
-  const { params } = context;
+  const params = context.params;
   try {
     if (!params || !params.id) {
       return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
@@ -54,7 +54,7 @@ export async function PUT(request: NextRequest, context: { params: { id: string 
 
 // Deletar meta
 export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
-  const { params } = context;
+  const params = context.params;
   try {
     if (!params || !params.id) {
       return NextResponse.json({ error: 'ID não fornecido' }, { status: 400 })
