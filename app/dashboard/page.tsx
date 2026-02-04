@@ -18,57 +18,56 @@ import ThemeToggle from '@/components/ThemeToggle'
 import Link from 'next/link'
 
 export default function Dashboard() {
-      // ...
-    // Buscar dados reais do Facebook
-    const fetchFacebookMetrics = async () => {
-      try {
-        setLoadingFacebook(true)
-          const periodMap: Record<string, string> = {
-            'today': 'today',
-            '7days': 'last_7d',
-            '30days': 'last_30d',
-          }
-          const period = periodMap[selectedPeriod] || 'last_30d'
-          let url = `/api/facebook/metrics?period=${period}`
-        if (selectedCampaign) {
-          url += `&campaignId=${selectedCampaign}`
-        }
-        const response = await fetch(url)
-        if (response.ok) {
-          const data = await response.json()
-          setFacebookData(data)
-        } else {
-          // Dados mock
-          setFacebookData({
-            cpm: 'R$ 0.00',
-            roi: '0.0x',
-            cpc: 'R$ 0.00',
-            impressoes: '0',
-            cliques: 0,
-            gastos: 'R$ 0.00',
-            ctr: '0%',
-            frequencia: '0',
-            connected: false,
-          })
-        }
-      } catch (error) {
-        console.error('Erro ao buscar métricas Facebook:', error)
+  // Buscar dados reais do Facebook
+  const fetchFacebookMetrics = async () => {
+    try {
+      setLoadingFacebook(true)
+      const periodMap: Record<string, string> = {
+        'today': 'today',
+        '7days': 'last_7d',
+        '30days': 'last_30d',
+      }
+      const period = periodMap[selectedPeriod] || 'last_30d'
+      let url = `/api/facebook/metrics?period=${period}`
+      if (selectedCampaign) {
+        url += `&campaignId=${selectedCampaign}`
+      }
+      const response = await fetch(url)
+      if (response.ok) {
+        const data = await response.json()
+        setFacebookData(data)
+      } else {
         // Dados mock
         setFacebookData({
-          cpm: 'R$ 45.20',
-          roi: '3.2x',
-          cpc: 'R$ 2.15',
-          impressoes: '125.4k',
-          cliques: 1854,
-          gastos: 'R$ 3.987',
-          ctr: '1.48%',
-          frequencia: '2.3',
+          cpm: 'R$ 0.00',
+          roi: '0.0x',
+          cpc: 'R$ 0.00',
+          impressoes: '0',
+          cliques: 0,
+          gastos: 'R$ 0.00',
+          ctr: '0%',
+          frequencia: '0',
           connected: false,
         })
-      } finally {
-        setLoadingFacebook(false)
       }
+    } catch (error) {
+      console.error('Erro ao buscar métricas Facebook:', error)
+      // Dados mock
+      setFacebookData({
+        cpm: 'R$ 45.20',
+        roi: '3.2x',
+        cpc: 'R$ 2.15',
+        impressoes: '125.4k',
+        cliques: 1854,
+        gastos: 'R$ 3.987',
+        ctr: '1.48%',
+        frequencia: '2.3',
+        connected: false,
+      })
+    } finally {
+      setLoadingFacebook(false)
     }
+  }
   const [viewMode, setViewMode] = useState<'produtor' | 'gestor'>('produtor')
   const [selectedPeriod, setSelectedPeriod] = useState('7days')
   const [customDateRange, setCustomDateRange] = useState({ start: '', end: '' })
@@ -98,54 +97,46 @@ export default function Dashboard() {
   ])
 
   // Buscar dados reais do WhatsApp
+  const fetchWhatsAppMetrics = async () => {
+    try {
+      setLoadingWhatsApp(true)
+      const response = await fetch('/api/whatsapp/metrics')
+      if (response.ok) {
+        const data = await response.json()
+        setWhatsappData(data)
+      } else {
+        // Se der erro, usa dados mock
+        setWhatsappData({
+          conversasIniciadas: 0,
+          conversasNaoTerminadas: 0,
+          leadsQualificados: 0,
+          mediaConversasDia: 0,
+          taxaResposta: '0%',
+          tempoMedioResposta: '0min',
+        })
+      }
+    } catch (error) {
+      console.error('Erro ao buscar métricas WhatsApp:', error)
+      // Dados mock em caso de erro
+      setWhatsappData({
+        conversasIniciadas: 1245,
+        conversasNaoTerminadas: 458,
+        leadsQualificados: 342,
+        mediaConversasDia: 178,
+        taxaResposta: '73%',
+        tempoMedioResposta: '4.2min',
+      })
+    } finally {
+      setLoadingWhatsApp(false)
+    }
+  }
+
   useEffect(() => {
-    const fetchWhatsAppMetrics = async () => {
-      try {
-        setLoadingWhatsApp(true)
-        const response = await fetch('/api/whatsapp/metrics')
-        if (response.ok) {
-          const data = await response.json()
-          setWhatsappData(data)
-        useEffect(() => {
-          const fetchWhatsAppMetrics = async () => {
-            try {
-              setLoadingWhatsApp(true)
-              const response = await fetch('/api/whatsapp/metrics')
-              if (response.ok) {
-                const data = await response.json()
-                setWhatsappData(data)
-              } else {
-                // Se der erro, usa dados mock
-                setWhatsappData({
-                  conversasIniciadas: 0,
-                  conversasNaoTerminadas: 0,
-                  leadsQualificados: 0,
-                  mediaConversasDia: 0,
-                  taxaResposta: '0%',
-                  tempoMedioResposta: '0min',
-                })
-              }
-            } catch (error) {
-              console.error('Erro ao buscar métricas WhatsApp:', error)
-              // Dados mock em caso de erro
-              setWhatsappData({
-                conversasIniciadas: 1245,
-                conversasNaoTerminadas: 458,
-                leadsQualificados: 342,
-                mediaConversasDia: 178,
-                taxaResposta: '73%',
-                tempoMedioResposta: '4.2min',
-              })
-            } finally {
-              setLoadingWhatsApp(false)
-            }
-          }
-          fetchWhatsAppMetrics()
-          // Atualizar a cada 30 segundos
-          const interval = setInterval(fetchWhatsAppMetrics, 30000)
-          return () => clearInterval(interval)
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [])
+    fetchWhatsAppMetrics();
+    // Atualizar a cada 30 segundos
+    const interval = setInterval(fetchWhatsAppMetrics, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Mapeamento de períodos para API do Facebook
   const periodMap: Record<string, string> = {
@@ -158,45 +149,6 @@ export default function Dashboard() {
   // Adiciona campaignId à URL se uma campanha específica estiver selecionada
   // Se selectedCampaign for null, busca dados de todas as campanhas (agregado)
   const campaignParam = selectedCampaign ? `&campaignId=${selectedCampaign}` : ''
-  // ...restante do código...
-        } else {
-          // Dados mock
-          setFacebookData({
-            cpm: 'R$ 0.00',
-            roi: '0.0x',
-            cpc: 'R$ 0.00',
-            impressoes: '0',
-            cliques: 0,
-            gastos: 'R$ 0.00',
-            ctr: '0%',
-            frequencia: '0',
-            connected: false,
-          })
-        }
-      } catch (error) {
-        console.error('Erro ao buscar métricas Facebook:', error)
-        // Dados mock
-        setFacebookData({
-          cpm: 'R$ 45.20',
-          roi: '3.2x',
-          cpc: 'R$ 2.15',
-          impressoes: '125.4k',
-          cliques: 1854,
-          gastos: 'R$ 3.987',
-          ctr: '1.48%',
-          frequencia: '2.3',
-          connected: false,
-        })
-      } finally {
-        setLoadingFacebook(false)
-      }
-    }
-
-    fetchFacebookMetrics()
-    // Atualizar quando mudar o período ou campanha
-    const interval = setInterval(fetchFacebookMetrics, 60000) // 1 minuto
-    return () => clearInterval(interval)
-  }, [selectedPeriod, selectedCampaign])
 
   // Buscar dados reais do Hotmart
   useEffect(() => {

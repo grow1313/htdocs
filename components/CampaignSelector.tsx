@@ -62,8 +62,7 @@ export default function CampaignSelector({ onSelectCampaign }: CampaignSelectorP
 
   useEffect(() => {
     fetchCampaigns()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [fetchCampaigns])
 
   const handleSelectCampaign = async (campaignId: string, facebookCampaignId: string | null, campaignName: string) => {
     try {

@@ -26,7 +26,6 @@ export default function NotificationCenter() {
     // Atualizar a cada 30 segundos
     const interval = setInterval(fetchNotifications, 30000)
     return () => clearInterval(interval)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
