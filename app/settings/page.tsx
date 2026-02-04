@@ -55,9 +55,9 @@ export default function ConfigPage() {
       } catch (error) {
         console.error('Erro ao verificar integrações:', error)
       }
-    }
-    checkIntegrations()
-  }, [])
+    };
+    checkIntegrations();
+  }, []);
 
   const handleSave = () => {
     // Aqui você salvaria no banco de dados
